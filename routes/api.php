@@ -37,7 +37,29 @@ Route::get('date', function (Request $request) {
 
     $now_date = Carbon::now();
 
-    $date1 =  date(Carbon::createFromFormat('Y-m-d H:i:s', $now_date, '+7')->format('d-m-Y'));
+    // $date1 =  date(Carbon::createFromFormat('Y-m-d H:i:s', $now_date, '+7')->format('d-m-Y'));
 
-    return response()->json($date1);
+    return response()->json($now_date);
 });
+
+Route::post('date', function (Request $request) {
+
+    $data =  $request->input('date');
+    $now_date = Carbon::now();
+    $sendDate = Carbon::createFromFormat('Y-m-d H',$data);
+    // $date1 =  date(Carbon::createFromFormat('Y-m-d H:i:s', $now_date, '+7')->format('d-m-Y'));
+
+    return response()->json($sendDate);
+});
+
+
+Route::get('meetings', [HomeController::class,'list']);
+
+// Create meeting room using topic, agenda, start_time.
+Route::post('meetings', [HomeController::class,'create']);
+
+// Get information of the meeting room by ID.
+Route::get('meetings/{id}', [HomeController::class,'get'])->where('id', '[0-9]+');
+
+Route::patch('meetings/{id}', [HomeController::class,'update'])->where('id', '[0-9]+');
+Route::delete('meetings/{id}', [HomeController::class,'delete'])->where('id', '[0-9]+');
