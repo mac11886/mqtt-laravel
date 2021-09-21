@@ -38,8 +38,11 @@ Route::get('date', function (Request $request) {
     $now_date = Carbon::now();
 
     // $date1 =  date(Carbon::createFromFormat('Y-m-d H:i:s', $now_date, '+7')->format('d-m-Y'));
+    $date1 = date(Carbon::createFromFormat('Y-m-d H:i:s', $now_date, '+7')->format('Y-m-d'));
+    $date1 .= "17:30";
+    // $date2 = $date1 + $dateTime;
 
-    return response()->json($now_date);
+    return response()->json($date1);
 });
 
 Route::post('date', function (Request $request) {

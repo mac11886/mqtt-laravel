@@ -28,8 +28,12 @@ class HomeController extends Controller
 
     function index()
     {
-        $data = DB::select('select * from zoom_list');
-        return view('home', ['data' => $data]);
+        $now_date = Carbon::now();
+        $date =  date(Carbon::createFromFormat('Y-m-d H:i:s', $now_date, '+7')->format('d-m-Y'));
+
+        $data = ZoomList::where('date',$date)->get();
+
+        return view('home', ['data' => $data],['date'=>$date]);
     }
 
     function getDeviceId($id)
@@ -47,11 +51,19 @@ class HomeController extends Controller
     {
         $zoom = new ZoomList();
         $now_date = Carbon::now();
-        $date =  date(Carbon::createFromFormat('Y-m-d H:i:s', $now_date, '+7')->format('d-m-Y'));
         $zoom->device_id = $request->input('device_id');
-        $zoom->url = $request->input('url');
-        $zoom->start_time = $request->input('start_time');
         $zoom->end_time = $request->input('end_time');
+        $date =  date(Carbon::createFromFormat('Y-m-d H:i:s', $now_date, '+7')->format('d-m-Y'));
+        $dateZoom = date(Carbon::createFromFormat('Y-m-d H:i:s', $now_date, '+7')->format('Y-m-d'));
+        $topic = $request->input('topic');
+        $agenda = $request->input('agenda');
+
+        $zoom->start_time = $request->input('start_time');
+        $dateZoom .= $zoom->start_time;
+        $responseZoom = $this->create($topic,$agenda,$dateZoom);
+        $url = $responseZoom['data']['join_url'];
+        $zoom->url = $url;
+
         $zoom->date = $date;
         try {
             $zoom->save();
@@ -63,9 +75,7 @@ class HomeController extends Controller
     }
     public function list(Request $request)
     {
-
         $path = 'users/me/meetings';
-
         $response = $this->zoomGet($path);
 
         $data = json_decode($response->body(), true);
@@ -79,29 +89,29 @@ class HomeController extends Controller
             'data' => $data,
         ];
     }
-    public function create(Request $request)
+    function create($topic, $agenda, $start_time)
     {
-        $validator = Validator::make($request->all(), [
-            'topic' => 'required|string',
-            'start_time' => 'required|date',
-            'agenda' => 'string|nullable',
-        ]);
+        // $validator = Validator::make($request->all(), [
+        //     'topic' => 'required|string',
+        //     'start_time' => 'required|date',
+        //     'agenda' => 'string|nullable',
+        // ]);
 
-        if ($validator->fails()) {
-            return [
-                'success' => false,
-                'data' => $validator->errors(),
-            ];
-        }
-        $data = $validator->validated();
+        // if ($validator->fails()) {
+        //     return [
+        //         'success' => false,
+        //         'data' => $validator->errors(),
+        //     ];
+        // }
+        // $data = $validator->validated();
 
         $path = 'users/me/meetings';
         $response = $this->zoomPost($path, [
-            'topic' => $data['topic'],
+            'topic' => $topic,
             'type' => self::MEETING_TYPE_SCHEDULE,
-            'start_time' => $this->toZoomTimeFormat($data['start_time']),
+            'start_time' => $this->toZoomTimeFormat($start_time),
             'duration' => 30,
-            'agenda' => $data['agenda'],
+            'agenda' => $agenda,
             'settings' => [
                 'host_video' => true,
                 'participant_video' => false,
