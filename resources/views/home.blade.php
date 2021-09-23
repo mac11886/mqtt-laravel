@@ -24,6 +24,24 @@
 </style>
 
 <body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">ZOOM</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/device">Device</a>
+      </li>
+
+    </ul>
+
+  </div>
+</nav>
     <div class="container">
 
         <form action="/api/saveUrl" method="POST">
@@ -83,6 +101,8 @@
                 <tr>
 
                     <th scope="col">Device ID</th>
+                    <th scope="col">Topic</th>
+                    <th scope="col">Agenda</th>
                     <th scope="col">Zoom Url</th>
                     <th scope="col">Start time</th>
                     <th scope="col">End time</th>
@@ -93,6 +113,9 @@
                 <tr>
 
                     <td>{{$datalist->device_id}}</td>
+                    <td>{{$datalist->topic}}</td>
+                    <td>{{$datalist->agenda}}</td>
+
                     <td>{{$datalist->url}}</td>
                     <td>{{$datalist->start_time}}</td>
                     <td>{{$datalist->end_time}}</td>

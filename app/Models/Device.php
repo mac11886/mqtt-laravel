@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ZoomList extends Model
+class Device extends Model
 {
     use HasFactory;
-    protected $fillable = ['url','device_id' ,'topic','agenda','start_time', 'end_time','date'];
-    protected $table = 'zoom_list';
+    protected $fillable = ['name','device_id' ,'location', 'zoom_email','zoom_api_key','zoom_api_secret'];
+    protected $table = 'device';
     public $timestamps = true;
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DeviceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use PhpMqtt\Client\Facades\MQTT;
@@ -32,6 +33,8 @@ Route::post('mqtt', function (Request $request) {
 Route::get('getDeviceId/{id}', [HomeController::class, 'getDeviceId']);
 Route::post('saveUrl', [HomeController::class,'saveData']);
 Route::get('listUrl', [HomeController::class,'getList']);
+Route::post('saveDevice',[DeviceController::class,'saveDevice']);
+Route::get('getDevice',[DeviceController::class,'getDevice']);
 
 Route::get('date', function (Request $request) {
 

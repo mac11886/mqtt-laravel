@@ -7,14 +7,16 @@ use Illuminate\Support\Facades\Log;
 trait ZoomJWT
 {
 
-    private function generateZoomToken()
+    public function generateZoomToken($Zoomkey,$Zoomsecret)
     {
-        $key = env('ZOOM_API_KEY', '');
-        $secret = env('ZOOM_API_SECRET', '');
+        $key = $Zoomkey;
+        $secret = $Zoomsecret;
+
         $payload = [
             'iss' => $key,
             'exp' => strtotime('+1 minute'),
         ];
+        // dd($key,$secret,$Zoomkey,$Zoomsecret);
         return \Firebase\JWT\JWT::encode($payload, $secret, 'HS256');
     }
     private function retrieveZoomUrl()
@@ -23,41 +25,43 @@ trait ZoomJWT
         return env('ZOOM_API_URL', '');
     }
 
-    private function zoomRequest()
+    private function zoomRequest($Zoomkey,$Zoomsecret)
     {
-        $jwt = $this->generateZoomToken();
+        $jwt = $this->generateZoomToken($Zoomkey,$Zoomsecret);
+        // dd($jwt);
         return \Illuminate\Support\Facades\Http::withHeaders([
             'authorization' => 'Bearer ' . $jwt,
             'content-type' => 'application/json',
         ]);
     }
 
-    public function zoomGet(string $path, array $query = [])
+    public function zoomGet(string $path, array $query = [],$Zoomkey,$Zoomsecret)
     {
         $url = $this->retrieveZoomUrl();
-        $request = $this->zoomRequest();
+        $request = $this->zoomRequest($Zoomkey,$Zoomsecret);
         // dd($request->get($url . $path, $query));
         return $request->get($url . $path, $query);
     }
 
-    public function zoomPost(string $path, array $body = [])
+    public function zoomPost(string $path, array $body = [],$Zoomkey,$Zoomsecret)
     {
         $url = $this->retrieveZoomUrl();
-        $request = $this->zoomRequest();
+        $request = $this->zoomRequest($Zoomkey,$Zoomsecret);
+        // dd($Zoomkey,$Zoomsecret);
         return $request->post($url . $path, $body);
     }
 
-    public function zoomPatch(string $path, array $body = [])
+    public function zoomPatch(string $path, array $body = [],$Zoomkey,$Zoomsecret)
     {
         $url = $this->retrieveZoomUrl();
-        $request = $this->zoomRequest();
+        $request = $this->zoomRequest($Zoomkey,$Zoomsecret);
         return $request->patch($url . $path, $body);
     }
 
-    public function zoomDelete(string $path, array $body = [])
+    public function zoomDelete(string $path, array $body = [],$Zoomkey,$Zoomsecret)
     {
         $url = $this->retrieveZoomUrl();
-        $request = $this->zoomRequest();
+        $request = $this->zoomRequest($Zoomkey,$Zoomsecret);
         return $request->delete($url . $path, $body);
     }
     public function toZoomTimeFormat(string $dateTime)
