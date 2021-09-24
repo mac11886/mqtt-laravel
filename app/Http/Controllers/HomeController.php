@@ -31,9 +31,7 @@ class HomeController extends Controller
     {
         $now_date = Carbon::now();
         $date =  date(Carbon::createFromFormat('Y-m-d H:i:s', $now_date, '+7')->format('d-m-Y'));
-
         $data = ZoomList::where('date', $date)->get();
-
         return view('home', ['data' => $data], ['date' => $date]);
     }
 
@@ -59,11 +57,8 @@ class HomeController extends Controller
         $dateZoom = date(Carbon::createFromFormat('Y-m-d H:i:s', $now_date, '+7')->format('Y-m-d'));
         $zoom->topic = $request->input('topic');
         $zoom->agenda = $request->input('agenda');
-
         $zoom->start_time = $request->input('start_time');
         $dateZoom .= $zoom->start_time;
-
-
         $zoom->date = $date;
 
         $dataDevice = Device::where('device_id', $zoom->device_id)->first();
@@ -71,15 +66,14 @@ class HomeController extends Controller
         if ($zoom->device_id == $dataDevice['device_id']) {
             $apiKey = $dataDevice['zoom_api_key'];
             $apiSecret = $dataDevice['zoom_api_secret'];
-            // $this->generateZoomToken($apiKey, $apiSecret);
+
             $responseZoom = $this->create($zoom->topic, $zoom->agenda, $dateZoom, $apiKey, $apiSecret);
-            // dd($responseZoom);
             $url = $responseZoom['data']['join_url'];
             $zoom->url = $url;
             try {
                 $zoom->save();
                 MQTT::publish('roundbot/connect', 'restart');
-                return redirect('/');
+                return redirect('/')->with('success','Item created successfully!');
             } catch (Exception $e) {
                 return json_encode($e);
             }
