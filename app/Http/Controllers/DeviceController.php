@@ -11,13 +11,14 @@ class DeviceController extends Controller
 
     function index()
     {
-        $data =Device::all();
+        $data =Device::orderBy('device_id')->get();
+
         return view('device', ['data' => $data]);
     }
 
     function getDevice(){
         // $data =Device::all();
-        $dataDevice =Device::where('device_id',2)->get();
+        $dataDevice =Device::orderBy('device_id')->get();
         return response()->json($dataDevice);
     }
 

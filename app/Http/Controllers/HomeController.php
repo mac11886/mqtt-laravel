@@ -10,7 +10,7 @@ use DB;
 use PhpMqtt\Client\Facades\MQTT;
 
 use App\Traits\ZoomJWT;
-
+use Exception;
 use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
@@ -32,7 +32,8 @@ class HomeController extends Controller
         $now_date = Carbon::now();
         $date =  date(Carbon::createFromFormat('Y-m-d H:i:s', $now_date, '+7')->format('d-m-Y'));
         $data = ZoomList::where('date', $date)->get();
-        return view('home', ['data' => $data], ['date' => $date]);
+        $device = Device::all();
+        return view('home', ['data' => $data], ['date' => $date],['device'=>$device]);
     }
 
 
@@ -42,7 +43,8 @@ class HomeController extends Controller
     {
         $now_date = Carbon::now();
         $time =  date(Carbon::createFromFormat('Y-m-d H:i:s', $now_date, '+7')->addHour(7)->format('H:i'));
-        $device =  ZoomList::where('device_id', $id)->where('start_time', ">=", $time)->get();
+        $date  = date(Carbon::createFromFormat('Y-m-d H:i:s', $now_date, '+7')->format('d-m-Y'));
+        $device =  ZoomList::where('device_id', $id)->where('date',"=",$date)->where('start_time', ">=", $time)->orderBy('start_time')->get();
 
         return $device;
     }
@@ -68,12 +70,22 @@ class HomeController extends Controller
             $apiSecret = $dataDevice['zoom_api_secret'];
 
             $responseZoom = $this->create($zoom->topic, $zoom->agenda, $dateZoom, $apiKey, $apiSecret);
+            // dd($responseZoom);
             $url = $responseZoom['data']['join_url'];
+            $meetingId = $responseZoom['data']['id'];
+            $passcode = "";
+            try {
+                $passcode = $responseZoom['data']['password'];
+            } catch (Exception $e) {
+                $passcode = "-";
+            }
+            $zoom->meeting_id = $meetingId;
+            $zoom->password = $passcode;
             $zoom->url = $url;
             try {
                 $zoom->save();
                 MQTT::publish('roundbot/connect', 'restart');
-                return redirect('/')->with('success','Item created successfully!');
+                return redirect('/')->with('success', 'Item created successfully!');
             } catch (Exception $e) {
                 return json_encode($e);
             }
@@ -81,6 +93,9 @@ class HomeController extends Controller
             return response()->json("can't create meeting");
         }
     }
+
+
+
     public function list(Request $request)
     {
         $path = 'users/me/meetings';
@@ -127,6 +142,8 @@ class HomeController extends Controller
                 'pre_schedule' => true,
                 'join_before_host' => true,
                 'jbh_time' => 0,
+                'auto_recording' => 'cloud',
+
             ]
         ], $apiKey, $apiSecret);
 
@@ -136,10 +153,40 @@ class HomeController extends Controller
             'data' => json_decode($response->body(), true),
         ];
     }
+    public function getMeeting($meetingId)
+    {
+        $apiKey = 'VuANSSOGRqyo-qxmwZ3ARg';
+        $apiSecret = '1shorqaOOwUVpA5ijRW2r9JGwgBiUqOshq0v';
+        $id = $meetingId;
+        $path = 'meetings/' . $id . '/recordings';
+        $response = $this->zoomGet($path, [], $apiKey, $apiSecret);
+
+        $token = $this->token;
+        // dd($response);
+        // dd($response->transferStats);
+        // $head = json_decode($response->get('transferStats'));
+        // dd($head);
+        $data = json_decode($response->body(), true);
+        // if ($response->ok()) {
+        //     $data['start_at'] = $this->toUnixTimeStamp($data['start_time'], $data['timezone']);
+        // }
+        $downloadMp4Link = $data['recording_files'][0]['download_url'];
+
+        return [
+            'response' => $response,
+            'success' => $response->ok(),
+            'download' => $downloadMp4Link,
+            'data' => $data,
+            'token' => $token
+
+        ];
+    }
     public function get(Request $request, string $id)
     {
+        $apiKey = 'En87hUU1Rn-B0in6-9x7SA';
+        $apiSecret = 'nRjasgBIoA75inRlYqvo4mESB4PEoShfp46Y';
         $path = 'meetings/' . $id;
-        $response = $this->zoomGet($path, [], "", "");
+        $response = $this->zoomGet($path, [],  $apiKey, $apiSecret);
 
         $data = json_decode($response->body(), true);
         if ($response->ok()) {

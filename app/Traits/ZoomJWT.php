@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Log;
 
 trait ZoomJWT
 {
-
+    public  $token = "";
     public function generateZoomToken($Zoomkey,$Zoomsecret)
     {
         $key = $Zoomkey;
@@ -25,21 +25,26 @@ trait ZoomJWT
         return env('ZOOM_API_URL', '');
     }
 
+
+
     private function zoomRequest($Zoomkey,$Zoomsecret)
     {
         $jwt = $this->generateZoomToken($Zoomkey,$Zoomsecret);
         // dd($jwt);
+        $this->token = $jwt;
         return \Illuminate\Support\Facades\Http::withHeaders([
             'authorization' => 'Bearer ' . $jwt,
             'content-type' => 'application/json',
         ]);
+
+        // return []
     }
 
     public function zoomGet(string $path, array $query = [],$Zoomkey,$Zoomsecret)
     {
         $url = $this->retrieveZoomUrl();
         $request = $this->zoomRequest($Zoomkey,$Zoomsecret);
-        // dd($request->get($url . $path, $query));
+
         return $request->get($url . $path, $query);
     }
 

@@ -31,7 +31,11 @@
                 </li>
             </ul>
         </div>
+        <div style="margin-right: 40px;">
 
+            <p> Download: <a download="main-ksta.zip" href="{{ Storage::url('main-ksta.zip')}}" title="main-ksta.zip"> .exe</a>
+            </p>
+        </div>
     </nav>
 
     <div class="container">

@@ -17,7 +17,7 @@ return [
     |
     */
 
-    'default_connection' => 'public',
+    'default_connection' => 'default',
 
     /*
     |--------------------------------------------------------------------------
@@ -36,13 +36,13 @@ return [
             'port' => 1883,
         ],
         'public' => [
-            'host' => '167.172.88.142',
+            'host' => '35.213.188.10',
             'port' => 1883,
         ],
         'default' => [
 
             // The host and port to which the client shall connect.
-            'host' => env('MQTT_HOST'),
+            'host' => env('MQTT_SERVER'),
             'port' => env('MQTT_PORT', 1883),
 
             // The MQTT protocol version used for the connection.
@@ -85,8 +85,8 @@ return [
 
                 // Credentials used for authentication and authorization.
                 'auth' => [
-                    'username' => env('MQTT_AUTH_USERNAME'),
-                    'password' => env('MQTT_AUTH_PASSWORD'),
+                    'username' => env('MQTT_USERNAME'),
+                    'password' => env('MQTT_PASSWORD'),
                 ],
 
                 // Can be used to declare a last will during connection. The last will
