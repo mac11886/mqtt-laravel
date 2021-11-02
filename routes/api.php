@@ -43,7 +43,13 @@ Route::post('saveUserHost', [ZoomController::class,'saveUser']);
 Route::post('saveMeeting', [ZoomController::class,'saveMeeting']);
 Route::post('file-upload',[ZoomController::class,'uploadFile']);
 Route::get('download/{filename}',[ZoomController::class,'downloadLink']);
+Route::get('getTeam',[ZoomController::class,'getTeam']);
+Route::post('saveMinute', [ZoomController::class,'saveMinuteOfMeeting']);
+
+
 Route::get('recording/{meetingId}', [HomeController::class,'getMeeting']);
+
+
 Route::get('meetings', [HomeController::class,'list']);
 // Create meeting room using topic, agenda, start_time.
 Route::post('meetings', [HomeController::class,'create']);
