@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\MqttController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,3 +22,5 @@ use App\Http\Controllers\DeviceController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/device',[DeviceController::class,'index']);
+
+Route::get('/mqtt',[MqttController::class,'index'])->name('mqtt');

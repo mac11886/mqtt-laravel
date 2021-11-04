@@ -36,7 +36,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/device">Device</a>
                 </li>
-
+                <li class="nav-item">
+                    <a class="nav-link" href="/mqtt">Mqtt</a>
+                </li>
             </ul>
 
         </div>
@@ -54,7 +56,7 @@
                     <label for="deviceId" class="form-label">Device Id</label>
                     <input type="number" class="form-control" id="deviceId" name="device_id" required>
                 </div>
-             
+
                 <div class="col-3">
                     <label for="topic" class="form-label">Topic</label>
                     <input type="text" class="form-control" id="topic" name="topic" required>

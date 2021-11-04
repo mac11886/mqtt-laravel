@@ -29,6 +29,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/device">Device</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/mqtt">Mqtt</a>
+                </li>
             </ul>
         </div>
         <div style="margin-right: 40px;">

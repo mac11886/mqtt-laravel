@@ -88,7 +88,10 @@ class ZoomController extends Controller
         $request->file('file')->storeAs('uploads', $fileName . ".csv", 'public');
         return response()->json("success", 200);
     }
-
+    public function getMeetingRecent(){
+        $zoomList = ZoomList::orderBy('id','desc')->get();
+        return response($zoomList);
+    }
     public function downloadLink($fileName)
     {
         // $file = Storage::disk('public/uploads/')->get($fileName . ".csv");
