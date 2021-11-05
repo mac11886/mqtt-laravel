@@ -89,7 +89,9 @@ class ZoomController extends Controller
         return response()->json("success", 200);
     }
     public function getMeetingRecent(){
-        $zoomList = ZoomList::orderBy('id','desc')->get();
+        $zoomList = ZoomHost::with('user','zoom_list')->orderByDesc('id')->limit(10)->get();
+        // dd($zoomList);
+
         return response($zoomList);
     }
     public function downloadLink($fileName)
