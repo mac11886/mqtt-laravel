@@ -39,7 +39,7 @@ Route::get('download/{filename}', [ZoomController::class, 'downloadLink']);
 Route::get('getTeam', [ZoomController::class, 'getTeam']);
 Route::post('saveMinute', [ZoomController::class, 'saveMinuteOfMeeting']);
 Route::get('getMeetingRecently', [ZoomController::class, 'getMeetingRecent']);
-
+Route::post('createMeeting', [ZoomController::class, 'createMeeting']);
 Route::get('recording/{meetingId}', [HomeController::class, 'getMeeting']);
 
 //MQTT
